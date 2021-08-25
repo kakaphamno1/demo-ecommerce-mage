@@ -62,7 +62,7 @@ class CatalogAPI {
       return catgegories.map<Category>((json) => Category.fromJson(json)).toList();
     } else {
       // If that call was not successful, throw an error.
-      throw Exception('Failed to load categories');
+      throw Exception('Failed to load categories ${response.statusCode}');
     }
   }
 
@@ -81,7 +81,7 @@ class CatalogAPI {
       'searchCriteria[filterGroups][1][filters][0][value]': '4',
       'searchCriteria[filterGroups][1][filters][0][conditionType]': 'eq',
       'searchCriteria[pageSize]': '20',
-      'searchCriteria[currentPage]': ${currentPage ?? 0}'
+      'searchCriteria[currentPage]': '${currentPage ?? 0}'
     };
     var uri = Uri.parse(ClientConfigs.baseURL +
         ClientConfigs.requestType +
@@ -102,7 +102,7 @@ class CatalogAPI {
       return products.map<Product>((json) => Product.fromJson(json)).toList();
     } else {
       // If that call was not successful, throw an error.
-      throw Exception('Failed to load categories');
+      throw Exception('Failed to load categories ${response.statusCode}');
     }
   }
 

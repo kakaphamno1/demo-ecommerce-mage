@@ -88,12 +88,14 @@ class Category {
   factory Category.fromJson(Map<String, dynamic> json) {
     var customAttributesData = json['custom_attributes'] as List;
     String imageURLPath = "";
-    List<CustomAttribute> customAttributes;
+    List<CustomAttribute>? customAttributes;
 
-    customAttributes = customAttributesData.map<CustomAttribute>((json) => CustomAttribute.fromJson(json)).toList();
-    final array = customAttributes.where((attr) => attr.code == 'image');
-    if (array.length > 0) {
-      imageURLPath = array.first.value;
+    if(customAttributesData != null) {
+      customAttributes = customAttributesData.map<CustomAttribute>((json) => CustomAttribute.fromJson(json)).toList();
+      final array = customAttributes.where((attr) => attr.code == 'image');
+      if (array.length > 0) {
+        imageURLPath = array.first.value;
+      }
     }
 
     // final imageURL = (imageURLPath != "") ? (globalStoreConfig.baseMediaURL??'') + MediaPath.categoryImagePath + imageURLPath : "";

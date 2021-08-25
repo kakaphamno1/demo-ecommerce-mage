@@ -3,7 +3,7 @@ import 'package:magento2_app/models/store.dart';
 class ClientConfigs {
   // Re-check if it can be assigned a new value as a global var
   static String baseURL = "http://magento2demo.firebearstudio.com/";
-  static const String accessToken = "ov0zrirqy8mtgduxlaoun82jb1l2r5f5";
+  static const String accessToken = "l15hbbtx4jpmurqf4pcx14naw2wvsu4r";
   static const String version = "V1/";
   static const String requestType = "rest/";
   static const String storeID = "default/";
