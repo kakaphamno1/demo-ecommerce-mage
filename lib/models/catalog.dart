@@ -89,8 +89,7 @@ class Category {
     var customAttributesData = json['custom_attributes'] as List;
     String imageURLPath = "";
     List<CustomAttribute>? customAttributes;
-
-    if(customAttributesData != null) {
+    if (customAttributesData != null) {
       customAttributes = customAttributesData.map<CustomAttribute>((json) => CustomAttribute.fromJson(json)).toList();
       final array = customAttributes.where((attr) => attr.code == 'image');
       if (array.length > 0) {
@@ -120,7 +119,7 @@ class Category {
 
 class ProductsResponse {
   List<Product>? products;
-  int?totalCount;
+  int? totalCount;
 
   ProductsResponse({this.products, this.totalCount});
 
