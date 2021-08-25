@@ -12,11 +12,11 @@ abstract class Mappable {
       Map<String, dynamic> mappingData = json.decode(data);
       return type.fromJson(mappingData);
     } else if (type is ListMappable) {
-      Iterable iterableData = json.decode(data);
+      List iterableData = json.decode(data);
       return type.fromJsonList(iterableData);
     }
 
-    return null;
+    return Mappable(type, data);
   }
 }
 
@@ -30,6 +30,6 @@ abstract class ListMappable<T> implements Mappable {
 
 // Handler for the network's error response.
 abstract class ErrorMappable implements BaseMappable {
-  String errorCode;
-  String description;
+  String? errorCode;
+  String? description;
 }

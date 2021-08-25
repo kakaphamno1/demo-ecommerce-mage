@@ -34,9 +34,9 @@ class LoadingPage extends StatefulWidget {
 
 class _LoadingPageState extends State<LoadingPage>
     with SingleTickerProviderStateMixin {
-  CancelableOperation _fetchLoadingOperation;
-  StoreConfig _storeConfig;
-  AnimationController _controller;
+  CancelableOperation? _fetchLoadingOperation;
+  StoreConfig? _storeConfig;
+  late AnimationController _controller;
 
   @override
   void initState() {
@@ -57,7 +57,7 @@ class _LoadingPageState extends State<LoadingPage>
 
   @override
   void dispose() {
-    if (_fetchLoadingOperation != null) _fetchLoadingOperation.cancel();
+    if (_fetchLoadingOperation != null) _fetchLoadingOperation!.cancel();
     _controller.dispose();
     super.dispose();
   }

@@ -95,7 +95,7 @@ void main() async {
   fido = Dog(
     id: fido.id,
     name: fido.name,
-    age: fido.age + 7,
+    age: (fido.age?? 0) + 7,
   );
   await updateDog(fido);
 
@@ -103,16 +103,16 @@ void main() async {
   print(await dogs());
 
   // Delete Fido from the database.
-  await deleteDog(fido.id);
+  await deleteDog(fido.id!);
 
   // Print the list of dogs (empty).
   print(await dogs());
 }
 
 class Dog {
-  final int id;
-  final String name;
-  final int age;
+  final int? id;
+  final String? name;
+  final int? age;
 
   Dog({this.id, this.name, this.age});
 

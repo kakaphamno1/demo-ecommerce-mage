@@ -2,10 +2,10 @@ import 'package:magento2_app/network_layer/network_mappers.dart';
 
 class ErrorResponse implements ErrorMappable, BaseMappable {
   @override
-  String description;
+  String? description;
 
   @override
-  String errorCode;
+  String? errorCode;
 
   @override
   Mappable fromJson(Map<String, dynamic> json) {

@@ -5,15 +5,15 @@
 import 'package:magento2_app/configurations/clientConfig.dart';
 
 class Product {
-  int id;
-  String name;
-  String sku;
-  int price;
-  String imageURL;
-  List<CustomAttribute> customAttributes = [];
-  List<String> imageURLs = [];
-  String description;
-  String shortDescription;
+  int? id;
+  String? name;
+  String? sku;
+  int? price;
+  String? imageURL;
+  List<CustomAttribute>? customAttributes;
+  List<String>? imageURLs;
+  String? description;
+  String? shortDescription;
 
   Product(
       {this.id,
@@ -35,7 +35,7 @@ class Product {
     final array = customAttributes.where((attr) => attr.code == 'image');
     String imageURLPath = "";
     if (array.length > 0) {
-      imageURLPath = array.first?.value;
+      imageURLPath = array.first.value;
     }
     // final imageURL = (imageURLPath != "") ? (globalStoreConfig.baseMediaURL??'') + MediaPath.productImagePath + imageURLPath : "";
     final imageURL =
@@ -76,31 +76,31 @@ class Product {
 }
 
 class Category {
-  int id;
-  String name;
-  int productCount;
-  List<CustomAttribute> customAttributes;
-  String imageURL;
-  List<Category> childrenData;
+  int? id;
+  String? name;
+  int? productCount;
+  List<CustomAttribute>? customAttributes;
+  String? imageURL;
+  List<Category>? childrenData;
 
   Category({this.id, this.name, this.productCount, this.customAttributes, this.imageURL, this.childrenData});
 
   factory Category.fromJson(Map<String, dynamic> json) {
-    final customAttributesData = json['custom_attributes'] as List;
+    var customAttributesData = json['custom_attributes'] as List;
     String imageURLPath = "";
     List<CustomAttribute> customAttributes;
-    if (customAttributesData != null) {
-      customAttributes = customAttributesData.map<CustomAttribute>((json) => CustomAttribute.fromJson(json)).toList();
-      final array = customAttributes.where((attr) => attr.code == 'image');
-      if (array.length > 0) {
-        imageURLPath = array.first?.value;
-      }
+
+    customAttributes = customAttributesData.map<CustomAttribute>((json) => CustomAttribute.fromJson(json)).toList();
+    final array = customAttributes.where((attr) => attr.code == 'image');
+    if (array.length > 0) {
+      imageURLPath = array.first.value;
     }
+
     // final imageURL = (imageURLPath != "") ? (globalStoreConfig.baseMediaURL??'') + MediaPath.categoryImagePath + imageURLPath : "";
     final imageURL =
         'http://magento2demo.firebearstudio.com/pub/media/catalog/product/cache/f788d01ac2c5fd4793fdef46ac3ad66c/' + imageURLPath;
     final childrenData = json["children_data"] as List;
-    List<Category> children;
+    List<Category>? children;
     if (childrenData != null) {
       children = childrenData.map<Category>((json) => Category.fromJson(json)).toList();
     }
@@ -117,8 +117,8 @@ class Category {
 }
 
 class ProductsResponse {
-  List<Product> products;
-  int totalCount;
+  List<Product>? products;
+  int?totalCount;
 
   ProductsResponse({this.products, this.totalCount});
 
@@ -132,7 +132,7 @@ class ProductsResponse {
 }
 
 class CustomAttribute {
-  String code;
+  String? code;
   dynamic value;
 
   CustomAttribute({this.code, this.value});

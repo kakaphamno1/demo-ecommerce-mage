@@ -14,16 +14,16 @@ class ProductDetailsPage extends StatefulWidget {
   static const routeName = 'product_details';
   String sku;
 
-  ProductDetailsPage({Key key, this.sku}) : super(key: key);
+  ProductDetailsPage({Key? key, required this.sku}) : super(key: key);
 
   _ProductDetailsPageState createState() => _ProductDetailsPageState();
 }
 
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
-  Product product;
-  CancelableOperation getProductOperation;
-  CancelableOperation addProductToCartOperation;
-  CancelableOperation createEmptyCartOperation;
+  Product? product;
+  CancelableOperation? getProductOperation;
+  CancelableOperation? addProductToCartOperation;
+  CancelableOperation? createEmptyCartOperation;
   bool loading = false;
 
   @override
@@ -36,8 +36,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     setState(() {
       loading = true;
     });
-    getProductOperation = CancelableOperation.fromFuture(
-        CatalogAPI().getProduct(widget.sku).then((product) {
+    getProductOperation = CancelableOperation.fromFuture(CatalogAPI().getProduct(widget.sku).then((product) {
       setState(() {
         loading = false;
         this.product = product;
@@ -63,7 +62,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                 Container(
                                   height: 250,
                                   child: ProductImagesView(
-                                    imageURLs: product.imageURLs,
+                                    imageURLs: product!.imageURLs??[],
                                   ),
                                 ),
                                 Padding(
@@ -71,10 +70,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                 ),
                                 Align(
                                   child: Padding(
-                                      child: Text(product.name,
-                                          style: AppTextStyle.title),
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 16)),
+                                      child: Text(product!.name??"", style: AppTextStyle.title),
+                                      padding: EdgeInsets.symmetric(horizontal: 16)),
                                   alignment: Alignment.centerLeft,
                                 ),
                                 Padding(
@@ -82,10 +79,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                 ),
                                 Align(
                                   child: Padding(
-                                    child: Text(product.sku,
-                                        style: AppTextStyle.normal),
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 16),
+                                    child: Text(product!.sku??"", style: AppTextStyle.normal),
+                                    padding: EdgeInsets.symmetric(horizontal: 16),
                                   ),
                                   alignment: Alignment.centerLeft,
                                 ),
@@ -94,27 +89,23 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                 ),
                                 Align(
                                   child: Padding(
-                                    child: Text('\$' + product.price.toString(),
-                                        style: AppTextStyle.normal),
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 16),
+                                    child: Text('\$' + product!.price.toString(), style: AppTextStyle.normal),
+                                    padding: EdgeInsets.symmetric(horizontal: 16),
                                   ),
                                   alignment: Alignment.centerLeft,
                                 ),
-                                product.shortDescription != ""
+                                product!.shortDescription != ""
                                     ? Padding(
                                         padding: EdgeInsets.only(top: 8),
                                       )
                                     : Padding(
                                         padding: EdgeInsets.all(0),
                                       ),
-                                product.shortDescription != ""
+                                product!.shortDescription != ""
                                     ? Align(
                                         child: Padding(
-                                          child: Text(product.shortDescription,
-                                              style: AppTextStyle.small),
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 16),
+                                          child: Text(product!.shortDescription ?? "", style: AppTextStyle.small),
+                                          padding: EdgeInsets.symmetric(horizontal: 16),
                                         ),
                                         alignment: Alignment.centerLeft,
                                       )
@@ -126,9 +117,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                 ),
                                 Align(
                                   child: Padding(
-                                    child: Html(data: product.description),
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 16),
+                                    child: Html(data: product!.description),
+                                    padding: EdgeInsets.symmetric(horizontal: 16),
                                   ),
                                   alignment: Alignment.centerLeft,
                                 )
@@ -139,21 +129,24 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         Align(
                             alignment: Alignment.bottomCenter,
                             child: Container(
-                              child: SizedBox(width: double.infinity, child: RaisedButton(
-                                colorBrightness: Brightness.light,
-                                disabledTextColor: Colors.black,
-                                highlightColor: Colors.blue.withAlpha(70),
-                                splashColor: Colors.blue[400],
-                                textColor: Colors.white,
-                                color: Colors.blue,
-                                child: Text(
-                                  "Add To Cart",
-                                  textAlign: TextAlign.center,
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: RaisedButton(
+                                  colorBrightness: Brightness.light,
+                                  disabledTextColor: Colors.black,
+                                  highlightColor: Colors.blue.withAlpha(70),
+                                  splashColor: Colors.blue[400],
+                                  textColor: Colors.white,
+                                  color: Colors.blue,
+                                  child: Text(
+                                    "Add To Cart",
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  onPressed: () {
+                                    _addProductToCart();
+                                  },
                                 ),
-                                onPressed: () {
-                                  _addProductToCart();
-                                },
-                              ),),
+                              ),
                               height: 44,
                               margin: EdgeInsets.all(16),
                             ))
@@ -176,43 +169,38 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     setState(() {
       loading = true;
     });
-    final quoteID =
-        await KeyValueStorage().getValueWithKey(PreferenceKeys.quoteGuestID);
+    final quoteID = await KeyValueStorage().getValueWithKey(PreferenceKeys.quoteGuestID);
     if (quoteID != null) {
-      addProductToCartOperation = CancelableOperation.fromFuture(
-              QuoteAPI().addSimpleProductToGuestCart(product, quoteID))
-          .then((status) {
-            if(status) {
-              _settingModalBottomSheet(context);
-            } else {
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (context) => AlertDialog(
-                  title: Text("Fail"),
-                  content: Text("Couldn't add the product to cart"),
-                  actions: <Widget>[
-                    FlatButton(
-                      child: Text("Done"),
-                      onPressed: () {
-                      Navigator.pop(context);
-                      },
-                    )
-                  ],
-                )
-              );
-            }
+      addProductToCartOperation =
+          CancelableOperation.fromFuture(QuoteAPI().addSimpleProductToGuestCart(product!, quoteID)).then((status) {
+        if (status) {
+          _settingModalBottomSheet(context);
+        } else {
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => AlertDialog(
+                    title: Text("Fail"),
+                    content: Text("Couldn't add the product to cart"),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text("Done"),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      )
+                    ],
+                  ));
+        }
         setState(() {
           loading = false;
         });
       });
     } else {
-      createEmptyCartOperation = CancelableOperation.fromFuture(
-          QuoteAPI().createAnEmptyGuestCart().then((id) {
+      createEmptyCartOperation = CancelableOperation.fromFuture(QuoteAPI().createAnEmptyGuestCart().then((id) {
         KeyValueStorage().set(id, PreferenceKeys.quoteGuestID);
-        addProductToCartOperation = CancelableOperation.fromFuture(
-                QuoteAPI().addSimpleProductToGuestCart(product, id))
-            .then((status) {
+        addProductToCartOperation =
+            CancelableOperation.fromFuture(QuoteAPI().addSimpleProductToGuestCart(product!, id)).then((status) {
           print(status ? "OK" : "Fail");
           setState(() {
             loading = false;
@@ -227,16 +215,16 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         context: context,
         builder: (BuildContext bc) {
           return AddedToCartView(
-            product: product,
+            product: product!,
           );
         });
   }
 
   @override
   void dispose() {
-    if (addProductToCartOperation != null) addProductToCartOperation.cancel();
-    if (createEmptyCartOperation != null) createEmptyCartOperation.cancel();
-    if (getProductOperation != null) getProductOperation.cancel();
+    if (addProductToCartOperation != null) addProductToCartOperation!.cancel();
+    if (createEmptyCartOperation != null) createEmptyCartOperation!.cancel();
+    if (getProductOperation != null) getProductOperation!.cancel();
     super.dispose();
   }
 }
@@ -245,7 +233,7 @@ class ProductImagesView extends StatelessWidget {
   final _controller = PageController(initialPage: 0);
   List<String> imageURLs;
 
-  ProductImagesView({Key key, this.imageURLs}) : super(key: key);
+  ProductImagesView({Key? key, required this.imageURLs}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -264,7 +252,7 @@ class ProductImagesView extends StatelessWidget {
 class AddedToCartView extends StatelessWidget {
   final Product product;
 
-  AddedToCartView({Key key, this.product}) : super(key: key);
+  AddedToCartView({Key? key, required this.product}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -279,12 +267,12 @@ class AddedToCartView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Container(
-                    padding: EdgeInsets.only(left: 16),
+                      padding: EdgeInsets.only(left: 16),
                       child: Text(
-                    "Added Product To Cart",
-                    style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  )),
+                        "Added Product To Cart",
+                        style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      )),
                   Flex(
                     direction: Axis.horizontal,
                   ),
@@ -307,8 +295,7 @@ class AddedToCartView extends StatelessWidget {
                           padding: EdgeInsets.all(8),
                           width: 84,
                           height: 84,
-                          child: CachedNetworkImage(
-                              imageUrl: product.imageURLs.first))),
+                          child: CachedNetworkImage(imageUrl: product.imageURLs?.first))),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -316,7 +303,7 @@ class AddedToCartView extends StatelessWidget {
                       Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            product.name,
+                            product.name??"",
                             style: AppTextStyle.title,
                           )),
                       Container(
@@ -325,7 +312,7 @@ class AddedToCartView extends StatelessWidget {
                       Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            product.sku,
+                            product.sku??"",
                             style: AppTextStyle.normal,
                           )),
                       Container(
@@ -346,9 +333,7 @@ class AddedToCartView extends StatelessWidget {
               ],
             ),
             RaisedButton(
-              onPressed: () {
-
-              },
+              onPressed: () {},
               child: Text("Go To Cart"),
             )
           ],

@@ -1,22 +1,22 @@
 import 'dart:core';
 
 class StoreConfig {
-  int id;
-  String code;
-  int websiteId;
-  String locale;
-  String baseCurrencyCode;
-  String defaultDisplayCurrencyCode;
-  String timezone;
-  String weightUnit;
-  String baseURL;
-  String baseLinkURL;
-  String baseStaticURL;
-  String baseMediaURL;
-  String secureBaseURL;
-  String secureBaseLinkURL;
-  String secureBaseStaticURL;
-  String secureBaseMediaURL;
+  int? id;
+  String? code;
+  int? websiteId;
+  String? locale;
+  String? baseCurrencyCode;
+  String? defaultDisplayCurrencyCode;
+  String? timezone;
+  String? weightUnit;
+  String? baseURL;
+  String? baseLinkURL;
+  String? baseStaticURL;
+  String? baseMediaURL;
+  String? secureBaseURL;
+  String? secureBaseLinkURL;
+  String? secureBaseStaticURL;
+  String? secureBaseMediaURL;
 
   StoreConfig({
     this.id, this.code, this.websiteId, this.locale, this.baseCurrencyCode, this.defaultDisplayCurrencyCode, this.timezone, this.weightUnit, this.baseURL, this.baseLinkURL,

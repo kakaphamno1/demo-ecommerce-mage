@@ -66,7 +66,7 @@ class CatalogAPI {
     }
   }
 
-  Future<List<Product>> getNewestProducts() async {
+  Future<List<Product>> getNewestProducts({int? currentPage}) async {
     // final params = <String, String> {
     //   "searchCriteria[currentPage]": "1",
     //   "searchCriteria[filter_groups][0][filters][0][condition_type]": "in",
@@ -81,7 +81,7 @@ class CatalogAPI {
       'searchCriteria[filterGroups][1][filters][0][value]': '4',
       'searchCriteria[filterGroups][1][filters][0][conditionType]': 'eq',
       'searchCriteria[pageSize]': '20',
-      'searchCriteria[currentPage]': '0'
+      'searchCriteria[currentPage]': ${currentPage ?? 0}'
     };
     var uri = Uri.parse(ClientConfigs.baseURL +
         ClientConfigs.requestType +
@@ -177,7 +177,7 @@ class CatalogAPI {
 
     if (response.statusCode == ResponseStatus.RESPONSE_SUCCESS) {
       final data = json.decode(response.body) as List;
-      final List<String> skus = data.map((json) => json["linked_product_sku"]);
+      final List<String> skus = data.map((json) => json["linked_product_sku"]) as List<String>;
       return getProductsWithSKUs(skus, skus.length, 1);
     } else {
       throw Exception('Failed to load product');

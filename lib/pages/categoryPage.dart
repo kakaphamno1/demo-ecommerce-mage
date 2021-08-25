@@ -9,9 +9,9 @@ typedef CategoryPageListItemOnTap = void Function(Category);
 
 class CategoryPage extends StatefulWidget {
   static const routeName = "category";
-  Category category;
+  Category? category;
 
-  CategoryPage({Key key, this.category}) : super(key: key);
+  CategoryPage({Key? key, this.category}) : super(key: key);
 
   _CategoryPageState createState() => _CategoryPageState();
 }
@@ -32,7 +32,7 @@ class _CategoryPageState extends State<CategoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: widget.category == null ? Text("Category") : Text(widget.category.name),
+        title: widget.category == null ? Text("Category") : Text(widget.category?.name??""),
       ),
       body: (widget.category == null)
           ? Center(
@@ -49,18 +49,18 @@ class _CategoryPageState extends State<CategoryPage> {
   }
 
   ListView _loadListView() {
-    final productCount = widget.category.productCount;
-    final List<Category> children = widget.category.childrenData;
+    int productCount = widget.category!.productCount?? 0;
+    final List<Category> children = widget.category!.childrenData ?? [];
     return ListView.builder(
       itemBuilder: (context, index) {
         if (productCount > 0 && index == 0) {
           return _loadTitleView("All products", () => {
-            this._onAllProductsTapped(widget.category)
+            this._onAllProductsTapped(widget.category!)
           });
         } else {
           final theIndex = productCount > 0 ? index - 1 : index;
           final cate = children.elementAt(theIndex);
-          return _loadTitleView(cate.name, () => {
+          return _loadTitleView(cate.name?? "", () => {
             this._onCategoryTapped(cate)
           });
         }

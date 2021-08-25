@@ -28,8 +28,8 @@ abstract class HttpRequestProtocol {
   String get path => "";
   HttpMethod get method => HttpMethod.GET;
   Map<String, String> get headers => {"Authentication": "Beearer ov0zrirqy8mtgduxlaoun82jb1l2r5f5"};
-  Map<String, dynamic> get parameters;
-  ContentEncoding get contentEncoding;
+  Map<String, dynamic>? get parameters;
+  ContentEncoding? get contentEncoding;
 
   /// Do not override this getter. Whenever the method's request is GET,
   /// the layer will concatenate the parameters into the query.
@@ -60,14 +60,14 @@ class HttpRequest extends Request {
   String get body => json.encode(this.service.parameters);
 
   @override
-  Uint8List get bodyBytes {
+  Uint8List? get bodyBytes {
     if (service.parameters == null) {
       return new Uint8List(0);
     }
     
     if (service.contentEncoding == ContentEncoding.url) {
       final queryParameters = Uri(queryParameters: service.parameters);
-      List<int> bodyBytes = utf8.encode(queryParameters.query);
+      Uint8List? bodyBytes = utf8.encode(queryParameters.query) as Uint8List?;
 
       return bodyBytes;
     } else {
@@ -77,7 +77,7 @@ class HttpRequest extends Request {
   }
 
   @override
-  MediaType get _contentType {
+  MediaType? get _contentType {
     var contentType = headers['content-type'];
     if (contentType == null) return null;
     return new MediaType.parse(contentType);

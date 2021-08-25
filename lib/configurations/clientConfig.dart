@@ -13,7 +13,7 @@ class ClientConfigs {
   }
 }
 
-StoreConfig globalStoreConfig;
+StoreConfig? globalStoreConfig;
 
 class ResponseStatus {
 // response status

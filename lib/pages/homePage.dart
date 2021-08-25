@@ -15,10 +15,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Product> _newestProducts = List<Product>();
-  List<Category> _categories = List<Category>();
-  CancelableOperation fetchingCategoriesOperation;
-  CancelableOperation fetchingProductsOperation;
+  List<Product> _newestProducts = <Product>[];
+  List<Category> _categories = <Category>[];
+  CancelableOperation? fetchingCategoriesOperation;
+  CancelableOperation? fetchingProductsOperation;
   @override
   void initState() {
     super.initState();
@@ -27,8 +27,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
-    if(fetchingCategoriesOperation != null) fetchingCategoriesOperation.cancel();
-    if(fetchingProductsOperation != null) fetchingProductsOperation.cancel();
+    if(fetchingCategoriesOperation != null) fetchingCategoriesOperation!.cancel();
+    if(fetchingProductsOperation != null) fetchingProductsOperation!.cancel();
     super.dispose();
   }
 
@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
     fetchingCategoriesOperation = CancelableOperation.fromFuture(CatalogAPI().getCategoryList().then((categoryList) => {
           setState(() => {_categories = categoryList})
         }));
-    fetchingProductsOperation = CancelableOperation.fromFuture(CatalogAPI().getNewestProducts(0).then((products) => {
+    fetchingProductsOperation = CancelableOperation.fromFuture(CatalogAPI().getNewestProducts(currentPage: 0).then((products) => {
           setState(() => {_newestProducts = products})
         }));
   }
@@ -83,7 +83,7 @@ class _HomePageState extends State<HomePage> {
                                 image: imageProvider,
                                 fit: BoxFit.cover,
                                 colorFilter: ColorFilter.mode(
-                                    Colors.white, null)),
+                                    Colors.white, BlendMode.color)),
                           ),
                         ),
                     placeholder: (context, url) =>
@@ -135,11 +135,11 @@ class _HomePageState extends State<HomePage> {
                               .size
                               .width / 2,
                           height: 320,
-                          child: ProductView(product, () {
+                          child: ProductView(product, onTap: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => ProductDetailsPage(sku: product.sku,)));
+                                    builder: (context) => ProductDetailsPage(sku: product.sku?? "",)));
                           }));
                     }),
               )
@@ -148,5 +148,6 @@ class _HomePageState extends State<HomePage> {
         return Center(child: CircularProgressIndicator(),);
       }
     }
+    return SizedBox();
   }
 }

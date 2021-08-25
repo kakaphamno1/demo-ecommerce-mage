@@ -7,7 +7,7 @@ import 'package:magento2_app/network_layer/network_mappers.dart';
 
 /// 'HttpSessionProtocol' acts as provider to send requests to the Network.
 abstract class HttpSessionProtocol<T> {
-  Future<Mappable> request({HttpRequestProtocol service, Mappable responseType});
+  Future<Mappable> request({required HttpRequestProtocol service,required Mappable responseType});
 }
 
 class HttpSession implements HttpSessionProtocol {
@@ -17,7 +17,7 @@ class HttpSession implements HttpSessionProtocol {
 
   @override
   Future<Mappable> request(
-      {HttpRequestProtocol service, Mappable responseType}) async {
+      {required HttpRequestProtocol service, required Mappable responseType}) async {
     final request = HttpRequest(service);
 
     final requestResponse = await _client.send(request);
