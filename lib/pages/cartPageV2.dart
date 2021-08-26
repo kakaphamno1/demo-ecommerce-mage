@@ -9,16 +9,19 @@ import 'package:magento2_app/apis/quoteAPI.dart';
 import 'package:magento2_app/configurations/clientConfig.dart';
 import 'package:magento2_app/dataStorage/KeyValueStorage.dart';
 import 'package:magento2_app/models/catalog.dart';
+import 'package:magento2_app/models/order_calculated.dart';
 import 'package:magento2_app/pages/productDetailsPage.dart';
 import 'package:magento2_app/pages/productsPage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:magento2_app/res/app_themes.dart';
+import 'package:magento2_app/res/string_extension.dart';
 import 'package:magento2_app/widget/BadgeWidget.dart';
 import 'package:magento2_app/widget/base_image_widget.dart';
 import 'package:magento2_app/widget/empty_data_widget.dart';
 import 'package:magento2_app/widget/label_value_widget.dart';
 import 'package:magento2_app/widget/product_price_row_widget.dart';
 import 'package:magento2_app/widget/quantity_widget.dart';
+import 'package:magento2_app/widget/ts_utils.dart';
 
 class CartPageV2 extends StatefulWidget {
   static const routeName = 'home';
@@ -29,8 +32,12 @@ class CartPageV2 extends StatefulWidget {
 
 class _CartPageV2State extends State<CartPageV2> {
   List<Product> lstCart = <Product>[];
+  OrderCalculated? orderCalculated;
   CancelableOperation? fetchingCart;
   CancelableOperation? fetchingCalculate;
+  CancelableOperation? addProductToCartOperation;
+  late var quoteID;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -42,6 +49,7 @@ class _CartPageV2State extends State<CartPageV2> {
   void dispose() {
     if (fetchingCart != null) fetchingCart!.cancel();
     if (fetchingCalculate != null) fetchingCalculate!.cancel();
+    if (addProductToCartOperation != null) addProductToCartOperation!.cancel();
     super.dispose();
   }
 
@@ -74,16 +82,31 @@ class _CartPageV2State extends State<CartPageV2> {
   }
 
   Future<void> _loadData() async {
-    final quoteID = await KeyValueStorage().getValueWithKey(PreferenceKeys.quoteGuestID);
+    setState(() {
+      isLoading = true;
+    });
+    quoteID = await KeyValueStorage().getValueWithKey(PreferenceKeys.quoteGuestID);
     lstCart.clear();
     fetchingCart = CancelableOperation.fromFuture(QuoteAPI().getItemFromCart(quoteID).then((products) => {
-          setState(() => {
-                if (products != null) {lstCart = products}
-              })
+          setState(() {
+            if (products != null) {
+              lstCart = products;
+            }
+            isLoading = false;
+          })
         }));
+    calculateOrder(quoteID);
+  }
+
+  void calculateOrder(quoteID) {
+    setState(() {
+      isLoading = true;
+    });
     fetchingCalculate = CancelableOperation.fromFuture(QuoteAPI().calculateOrder(quoteID).then((orderCalculated) => {
           setState(() {
             print(orderCalculated);
+            this.orderCalculated = orderCalculated;
+            isLoading = false;
           })
         }));
   }
@@ -95,7 +118,14 @@ class _CartPageV2State extends State<CartPageV2> {
         Expanded(
           child: orderContentWidget(),
         ),
-        bottomWidgetCart()
+        bottomWidgetCart(),
+        Container(
+          color: ThemeColor.appBackground,
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
+            child: NormalButton(context, text: 'Buy now', isOutLine: false, isLoading: isLoading, onTap: () async {}),
+          ),
+        )
       ],
     );
   }
@@ -113,22 +143,25 @@ class _CartPageV2State extends State<CartPageV2> {
               ),
             ),
           )
-        : Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              EmptyDataWidget(
-                text: 'empty cart',
-              ),
-              SizedBox(height: 32),
-              ActionText(
-                'continue shopping',
-                horizontalPadding: 16,
-                actionTextColor: ThemeColor.primary,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), border: Border.all(color: ThemeColor.primary)),
-                leftIcon: SvgPicture.asset('assets/cart.svg'),
-              )
-            ],
+        : Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                EmptyDataWidget(
+                  text: 'empty cart',
+                ),
+                SizedBox(height: 32),
+                ActionText(
+                  'continue shopping',
+                  horizontalPadding: 16,
+                  actionTextColor: ThemeColor.primary,
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(8), border: Border.all(color: ThemeColor.primary)),
+                  leftIcon: SvgPicture.asset('assets/cart.svg'),
+                )
+              ],
+            ),
           );
   }
 
@@ -182,111 +215,38 @@ class _CartPageV2State extends State<CartPageV2> {
               canSubQuantity: (product.qty ?? 0) > 1,
               quantity: product.qty ?? 0,
               changeText: (text) async {
-                // if (_debounce?.isActive ?? false) _debounce?.cancel();
-                // _debounce = Timer(const Duration(milliseconds: 800), () {
-                //   if (text.isNum && int.parse(text) != packingOrder.orderQuantity) {
-                //     int newQuantityOrder = int.parse(text);
-                //     int buyForQuantity = 0;
-                //     var lst = controller.mapSurrogate[packingOrder.productPackingCode];
-                //     if (lst != null && lst.length > 0) {
-                //       for (OrderSurrogateBilling osb in lst) {
-                //         buyForQuantity += osb.quantity ?? 0;
-                //       }
-                //     }
-                //     if (buyForQuantity > newQuantityOrder) {
-                //       showDialog<bool?>(
-                //           context: Get.context!,
-                //           builder: (BuildContext context) {
-                //             return AppConfirmDialog(
-                //               title: 'warning'.tr,
-                //               message: 'msg_warning_buy_for_quantity'.tr,
-                //             );
-                //           }).then((value) {
-                //         if (value != null && value) {
-                //           controller.mapSurrogate.remove(packingOrder.productPackingCode);
-                //           if (newQuantityOrder > (packingOrder.remainQuantity ?? 0)) {
-                //             packingOrder.orderQuantity = (packingOrder.remainQuantity ?? 0);
-                //             controller.showErrorSnackBar(message: 'optimize_remain_quantity'.tr);
-                //           } else {
-                //             packingOrder.orderQuantity = newQuantityOrder;
-                //           }
-                //           c.updateCartTable(packingOrder);
-                //           c.getAllPackingInDb(isUpdateList: false);
-                //         }
-                //       });
-                //     }else {
-                //       if (newQuantityOrder > (packingOrder.remainQuantity ?? 0)) {
-                //         packingOrder.orderQuantity = (packingOrder.remainQuantity ?? 0);
-                //         controller.showErrorSnackBar(message: 'optimize_remain_quantity'.tr);
-                //       } else {
-                //         packingOrder.orderQuantity = newQuantityOrder;
-                //       }
-                //       c.updateCartTable(packingOrder);
-                //       c.getAllPackingInDb(isUpdateList: false);
-                //     }
-                //   }
-                // });
+                if (_debounce?.isActive ?? false) _debounce?.cancel();
+                _debounce = Timer(const Duration(milliseconds: 500), () {
+                  if (text.isNumeric() && int.parse(text) != product.qty) {
+                    int newQuantityOrder = int.parse(text);
+                    setState(() {
+                      product.qty = newQuantityOrder;
+                      updateCart(product);
+                    });
+                  }
+                });
               },
               removeTap: () {
                 // -
-                // if ((packingOrder.checked ?? false)) {
-                //   int buyForQuantity = 0;
-                //   var lst = controller.mapSurrogate[packingOrder.productPackingCode];
-                //   if (lst != null && lst.length > 0) {
-                //     for (OrderSurrogateBilling osb in lst) {
-                //       buyForQuantity += osb.quantity ?? 0;
-                //     }
-                //   }
-                //   if (buyForQuantity == packingOrder.orderQuantity) {
-                //     showDialog<bool?>(
-                //         context: Get.context!,
-                //         builder: (BuildContext context) {
-                //           return AppConfirmDialog(
-                //             title: 'warning'.tr,
-                //             message: 'msg_warning_buy_for_quantity'.tr,
-                //           );
-                //         }).then((value) {
-                //       if (value != null && value) {
-                //         controller.mapSurrogate.remove(packingOrder.productPackingCode);
-                //         if (packingOrder.orderQuantity! > 1) {
-                //           packingOrder.orderQuantity = packingOrder.orderQuantity! - 1;
-                //           c.update([3]);
-                //           if (_debounce?.isActive ?? false) _debounce?.cancel();
-                //           _debounce = Timer(const Duration(milliseconds: 1000), () {
-                //             c.updateCartTable(packingOrder);
-                //             c.getAllPackingInDb(isUpdateList: true);
-                //           });
-                //         }
-                //       }
-                //     });
-                //   } else {
-                //     if (packingOrder.orderQuantity! > 1) {
-                //       packingOrder.orderQuantity = packingOrder.orderQuantity! - 1;
-                //       c.update([3]);
-                //       if (_debounce?.isActive ?? false) _debounce?.cancel();
-                //       _debounce = Timer(const Duration(milliseconds: 1000), () {
-                //         c.updateCartTable(packingOrder);
-                //         c.getAllPackingInDb(isUpdateList: true);
-                //       });
-                //     }
-                //   }
-                // }
+                if (product.qty! > 1) {
+                  setState(() {
+                    product.qty = product.qty! - 1;
+                    if (_debounce?.isActive ?? false) _debounce?.cancel();
+                    _debounce = Timer(const Duration(milliseconds: 300), () {
+                      updateCart(product);
+                    });
+                  });
+                }
               },
               addTap: () {
                 // +
-                // if ((packingOrder.checked ?? false)) {
-                //   if (packingOrder.orderQuantity! + 1 <= (packingOrder.remainQuantity ?? 0)) {
-                //     packingOrder.orderQuantity = packingOrder.orderQuantity! + 1;
-                //     c.update([3]);
-                //     if (_debounce?.isActive ?? false) _debounce?.cancel();
-                //     _debounce = Timer(const Duration(milliseconds: 1000), () {
-                //       c.updateCartTable(packingOrder);
-                //       c.getAllPackingInDb(isUpdateList: true);
-                //     });
-                //   } else {
-                //     showErrorSnackBar(title: 'Alert', message: 'optimize_remain_quantity'.tr);
-                //   }
-                // }
+                setState(() {
+                  product.qty = product.qty! + 1;
+                  if (_debounce?.isActive ?? false) _debounce?.cancel();
+                  _debounce = Timer(const Duration(milliseconds: 300), () {
+                    updateCart(product);
+                  });
+                });
               },
             ),
             SizedBox(
@@ -304,20 +264,38 @@ class _CartPageV2State extends State<CartPageV2> {
     );
   }
 
+  void updateCart(Product product) {
+    addProductToCartOperation =
+        CancelableOperation.fromFuture(QuoteAPI().addSimpleProductToGuestCart(product, quoteID)).then((status) {
+      calculateOrder(quoteID);
+    });
+  }
+
   bottomWidgetCart() {
-    return Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 12,
-              spreadRadius: 1,
-              color: Colors.black.withOpacity(0.08),
-            )
-          ],
-          color: ThemeColor.appBackground,
-        ),
-        child: Column(
-          children: [],
-        ));
+    return orderCalculated != null
+        ? Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 12,
+                  spreadRadius: 1,
+                  color: Colors.black.withOpacity(0.08),
+                )
+              ],
+              color: ThemeColor.appBackground,
+            ),
+            child: Column(
+              children: [
+                LabelValueWidget(
+                  'Total order',
+                  TsUtils.formatCurrency((orderCalculated!.grandTotal ?? 0).toDouble()),
+                  boldValue: true,
+                ),
+                LabelValueWidget('Discount', TsUtils.formatCurrency((orderCalculated!.discountAmount ?? 0) * -1)),
+                LabelValueWidget('Ship', TsUtils.formatCurrency((orderCalculated!.shippingTaxAmount ?? 0) * -1)),
+                LabelValueWidget('Total pay', TsUtils.formatCurrency((orderCalculated!.subtotal ?? 0).toDouble())),
+              ],
+            ))
+        : SizedBox();
   }
 }
