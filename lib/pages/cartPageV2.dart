@@ -54,10 +54,12 @@ class _CartPageV2State extends State<CartPageV2> {
                 if (products != null) {lstCart = products}
               })
         }));
-    fetchingCalculate = CancelableOperation.fromFuture(QuoteAPI().calculateOrder(quoteID).then((orderCal) => {
-          setState(() => {
-                if (orderCal != null) {lstCart = orderCal}
-              })
+    fetchingCalculate = CancelableOperation.fromFuture(QuoteAPI().calculateOrder(quoteID).then((orderCalculated) => {
+          // setState(() => {
+          //
+          //     })
+
+
         }));
   }
 

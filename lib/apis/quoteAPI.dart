@@ -50,7 +50,7 @@ class QuoteAPI {
           .get(uri, headers: {'Authorization': 'Bearer ' + ClientConfigs.accessToken, "Content-Type": "application/json"});
       if (response.statusCode == ResponseStatus.RESPONSE_SUCCESS) {
         final data = json.decode(response.body);
-        print(data);
+        print('##############################${data}');
         return data;
       } else {
         return null;
