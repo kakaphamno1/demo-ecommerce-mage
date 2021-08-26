@@ -38,12 +38,11 @@ class _CartPageV2State extends State<CartPageV2> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Cart"),
-        backgroundColor: Colors.blue,
-      ),
-      body: _buildItemsForListView(context)
-    );
+        appBar: AppBar(
+          title: Text("Cart"),
+          backgroundColor: Colors.blue,
+        ),
+        body: _buildItemsForListView(context));
   }
 
   Future<void> _loadData() async {
@@ -58,8 +57,7 @@ class _CartPageV2State extends State<CartPageV2> {
           // setState(() => {
           //
           //     })
-
-
+          print('xxxxxxxxxxxxx: $orderCalculated')
         }));
   }
 

@@ -4,11 +4,13 @@ import 'package:magento2_app/models/catalog.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:magento2_app/models/order_calculated.dart';
+
 class QuoteAPI {
   Future<bool> addSimpleProductToGuestCart(Product product, String quoteID) async {
     if (quoteID != null) {
       final params = {
-        "cartItem": {"sku": product.sku, "qty": '1', "quote_id": quoteID, "price": product.price}
+        "cartItem": {"sku": product.sku, "qty": '1', "quote_id": quoteID, "price": product.price, "item_id":product.itemId}
       };
 //      final body = jsonEncode(params);
       var uri = Uri.parse(ClientConfigs.loadBasicURL() + APIPath.guestCartsPath + quoteID + "/items");
@@ -43,15 +45,13 @@ class QuoteAPI {
     }
   }
 
-  Future<dynamic> calculateOrder(String quoteID) async {
+  Future<OrderCalculated?> calculateOrder(String quoteID) async {
     if (quoteID != null) {
       var uri = Uri.parse(ClientConfigs.loadBasicURL() + APIPath.guestCartsPath + quoteID + "/totals");
       final response = await http
           .get(uri, headers: {'Authorization': 'Bearer ' + ClientConfigs.accessToken, "Content-Type": "application/json"});
       if (response.statusCode == ResponseStatus.RESPONSE_SUCCESS) {
-        final data = json.decode(response.body);
-        print('##############################${data}');
-        return data;
+       return OrderCalculated.fromJsonCart(json.decode(response.body));
       } else {
         return null;
       }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:async/async.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -183,7 +185,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               child: ManufactureWidget(),
             ),
             productDescription(),
-
           ],
         ),
       ),
@@ -201,9 +202,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         child: Row(
           children: [
             InkWell(
-              onTap: () {
-
-              },
+              onTap: () {},
               borderRadius: BorderRadius.circular(50),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -382,7 +381,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   productAttributes() {
     if (product!.customAttributes != null && product!.customAttributes!.length > 0) {
       List<Widget> widgets = [];
-      for(CustomAttribute attr in product!.customAttributes!){
+      for (CustomAttribute attr in product!.customAttributes!) {
         widgets.add(_labelValueWidget(attr.code ?? "", attr.value.toString()));
       }
       return Column(

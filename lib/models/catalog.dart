@@ -15,6 +15,9 @@ class Product {
   String? description;
   String? shortDescription;
 
+  int? qty;
+  int? itemId;
+
   Product(
       {this.id,
       this.name,
@@ -24,7 +27,9 @@ class Product {
       this.shortDescription,
       this.imageURL,
       this.imageURLs,
-      this.customAttributes});
+      this.customAttributes,
+      this.qty,
+      this.itemId});
 
 //  factory Product.fromJson(Map<String, dynamic> json) => _$ProductFromJson(json);
 //  Map<String, dynamic> toJson() => _$ProductToJson(this);
@@ -80,13 +85,14 @@ class Product {
       }));
     }
     return new Product(
-      id: json['id'],
-      name: json['name'],
-      sku: json['sku'],
-      price: json['price'],
-      imageURL: imageURL,
-      imageURLs: imageURLs,
-    );
+        id: json['id'],
+        name: json['name'],
+        sku: json['sku'],
+        price: json['price'],
+        imageURL: imageURL,
+        imageURLs: imageURLs,
+        qty: json["qty"],
+        itemId: json["item_id"]);
   }
 }
 
