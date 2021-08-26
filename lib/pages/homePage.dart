@@ -187,11 +187,11 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          SwipperBanner(banners: [
-            "https://salt.tikicdn.com/cache/w1080/ts/banner/1e/af/79/a0201597b21768edccd49f765d8bb929.png",
-            "https://salt.tikicdn.com/cache/w1080/ts/banner/79/8c/2e/849ba73a8ffadda2199f4501e7ff902c.jpg",
-            "https://salt.tikicdn.com/cache/w1080/ts/banner/82/63/97/59816a632d6c5472c62bf7a8397d7d36.png"
-          ], height: 150),
+          // SwipperBanner(banners: [
+          //   "https://salt.tikicdn.com/cache/w1080/ts/banner/1e/af/79/a0201597b21768edccd49f765d8bb929.png",
+          //   "https://salt.tikicdn.com/cache/w1080/ts/banner/79/8c/2e/849ba73a8ffadda2199f4501e7ff902c.jpg",
+          //   "https://salt.tikicdn.com/cache/w1080/ts/banner/82/63/97/59816a632d6c5472c62bf7a8397d7d36.png"
+          // ], height: 150),
           SizedBox(height: 8),
           Row(children: [
             Padding(
