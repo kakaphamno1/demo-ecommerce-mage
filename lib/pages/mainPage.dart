@@ -6,6 +6,8 @@ import 'package:magento2_app/pages/categoryPage.dart';
 import 'package:magento2_app/pages/morePage.dart';
 import 'package:magento2_app/pages/profilePage.dart';
 
+import 'cartPageV2.dart';
+
 class MainPage extends StatefulWidget {
   static const String routeName = "main";
   @override
@@ -18,7 +20,7 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     CategoryPage(category: null,),
-    CartPage(),
+    CartPageV2(),
     ProfilePage(),
     MorePage()
   ];

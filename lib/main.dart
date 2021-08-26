@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:magento2_app/pages/cartPage.dart';
+import 'package:magento2_app/pages/cartPageV2.dart';
 import 'package:magento2_app/pages/checkoutPage.dart';
 import 'package:magento2_app/pages/homePage.dart';
 import 'package:magento2_app/pages/loadingPage.dart';
@@ -13,13 +14,15 @@ import 'apis/catalogAPI.dart';
 void main() {
   runApp(MaterialApp(
     title: 'Magento 2 App',
+
+    debugShowCheckedModeBanner: false,
     initialRoute: LoadingPage.routeName,
     routes: {
       LoadingPage.routeName: (context) => LoadingPage(),
       MainPage.routeName: (context) => MainPage(),
       HomePage.routeName: (context) => HomePage(),
       CategoryPage.routeName: (context) => CategoryPage(),
-      CartPage.routeName: (context) => CartPage(),
+      CartPage.routeName: (context) => CartPageV2(),
       CheckoutPage.routeName: (context) => CheckoutPage(),
       LoginPage.routeName: (context) => LoginPage()
     },

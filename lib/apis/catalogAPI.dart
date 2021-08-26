@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:core';
 import 'package:magento2_app/configurations/clientConfig.dart';
 import 'package:magento2_app/models/catalog.dart';
@@ -105,6 +104,36 @@ class CatalogAPI {
       throw Exception('Failed to load categories');
     }
   }
+  // Future<List<Product>> addToCart(Product product) async {
+  //   final params = <String, dynamic>{
+  //     'searchCriteria[filterGroups][1][filters][0][field]': 'visibility',
+  //     'searchCriteria[filterGroups][1][filters][0][value]': '4',
+  //     'searchCriteria[filterGroups][1][filters][0][conditionType]': 'eq',
+  //     'searchCriteria[pageSize]': '20',
+  //     'searchCriteria[currentPage]': '${currentPage??0}'
+  //   };
+  //   var uri = Uri.parse(ClientConfigs.baseURL +
+  //       ClientConfigs.requestType +
+  //       ClientConfigs.storeID +
+  //       ClientConfigs.version +
+  //       APIPath.getProductsPath);
+  //   uri = uri.replace(queryParameters: params);
+  //
+  //   print(uri.toString());
+  //
+  //   final response = await http.get(uri, headers: {'Authorization': 'Bearer ' + ClientConfigs.accessToken});
+  //
+  //   if (response.statusCode == ResponseStatus.RESPONSE_SUCCESS) {
+  //     // If the call to the server was successful, parse the JSON.
+  //     final data = json.decode(response.body);
+  //     print(data);
+  //     final products = data["items"] as List;
+  //     return products.map<Product>((json) => Product.fromJson(json)).toList();
+  //   } else {
+  //     // If that call was not successful, throw an error.
+  //     throw Exception('Failed to load categories');
+  //   }
+  // }
 
   Future<Category> getRootCategory() async {
     var uri = Uri.parse(ClientConfigs.baseURL +

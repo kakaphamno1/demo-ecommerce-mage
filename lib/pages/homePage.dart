@@ -1,11 +1,11 @@
 import 'package:async/async.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:magento2_app/apis/CatalogAPI.dart';
 import 'package:magento2_app/models/catalog.dart';
 import 'package:magento2_app/pages/productDetailsPage.dart';
 import 'package:magento2_app/pages/productsPage.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = 'home';
