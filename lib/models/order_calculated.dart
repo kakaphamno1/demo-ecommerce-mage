@@ -1,8 +1,8 @@
 class OrderCalculated {
-  int? grandTotal;
-  int? subtotal;
-  int? discountAmount;
-  int? shippingTaxAmount;
+  dynamic grandTotal = 0;
+  dynamic subtotal = 0;
+  dynamic discountAmount = 0;
+  dynamic shippingTaxAmount = 0;
 
   OrderCalculated({this.grandTotal, this.subtotal, this.discountAmount, this.shippingTaxAmount});
 

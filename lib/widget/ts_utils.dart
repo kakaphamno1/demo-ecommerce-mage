@@ -22,6 +22,9 @@ class TsUtils {
   static String formatCurrency(double? value, {String? currency}) {
     return oCcy.format(value ?? 0) + " " + (currency ?? "MMK");
   }
+  static String formatCurrencyDynamic(dynamic value, {String? currency}) {
+    return oCcy.format(value ?? 0) + " " + (currency ?? "MMK");
+  }
 
   static String formatNumber(double? value) {
     return oCcy.format(value ?? 0);

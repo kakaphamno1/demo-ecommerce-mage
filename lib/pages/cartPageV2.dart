@@ -288,12 +288,12 @@ class _CartPageV2State extends State<CartPageV2> {
               children: [
                 LabelValueWidget(
                   'Total order',
-                  TsUtils.formatCurrency((orderCalculated!.grandTotal ?? 0).toDouble()),
+                  TsUtils.formatCurrencyDynamic((orderCalculated!.grandTotal ?? 0).toDouble()),
                   boldValue: true,
                 ),
-                LabelValueWidget('Discount', TsUtils.formatCurrency((orderCalculated!.discountAmount ?? 0) * -1)),
-                LabelValueWidget('Ship', TsUtils.formatCurrency((orderCalculated!.shippingTaxAmount ?? 0) * -1)),
-                LabelValueWidget('Total pay', TsUtils.formatCurrency((orderCalculated!.subtotal ?? 0).toDouble())),
+                LabelValueWidget('Discount', TsUtils.formatCurrencyDynamic((orderCalculated!.discountAmount ) * -1)),
+                LabelValueWidget('Ship', TsUtils.formatCurrencyDynamic((orderCalculated!.shippingTaxAmount ) * -1)),
+                LabelValueWidget('Total pay', TsUtils.formatCurrencyDynamic((orderCalculated!.subtotal).toDouble())),
               ],
             ))
         : SizedBox();
