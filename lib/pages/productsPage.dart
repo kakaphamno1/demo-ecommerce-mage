@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:async/async.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:magento2_app/apis/catalogAPI.dart';
 import 'package:magento2_app/models/catalog.dart';
 import 'package:magento2_app/pages/productDetailsPage.dart';
+import 'package:magento2_app/res/app_themes.dart';
 
 enum ProductsLoadMoreStatus { STABLE, LOADING }
 
@@ -182,21 +185,40 @@ class ProductView extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(top: 4),
             ),
-            Text(
-              product.sku ?? "",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontWeight: FontWeight.normal, fontSize: 14),
-            ),
+            // Text(
+            //   product.sku ?? "",
+            //   textAlign: TextAlign.center,
+            //   style: TextStyle(fontWeight: FontWeight.normal, fontSize: 14),
+            // ),
             Padding(
               padding: EdgeInsets.only(top: 4),
             ),
-            Text(
-              '\$' + product.price.toString(),
-              textAlign: TextAlign.center,
-              style: TextStyle(fontWeight: FontWeight.normal, fontSize: 14),
-            )
+            RichText(
+              text: TextSpan(
+                text: 'price: ',
+                style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: ThemeColor.AppDark[700]),
+                children: <TextSpan>[
+                  TextSpan(
+                      text: product.price.toString(),
+                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: ThemeColor.AppDark[900])),
+                ],
+              ),
+            ),
+            SizedBox(height: 4),
+            PromotionWidget(10, 20),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget PromotionWidget(int from, int to) {
+    return Container(
+      padding: EdgeInsets.all(4),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: ThemeColor.AppRed[100]!.withAlpha(80)),
+      child: Text(
+        'Commission: $from% - $to%',
+        style: ThemeText.default_C1_12.copyWith(color: ThemeColor.AppRed[400]),
       ),
     );
   }
