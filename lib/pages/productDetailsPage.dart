@@ -222,6 +222,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 12),
                 child: NormalButton(context, text: 'Add to cart', marquee: true, onTap: () async {
+                  _addProductToCart();
                 }),
               ),
             ),
