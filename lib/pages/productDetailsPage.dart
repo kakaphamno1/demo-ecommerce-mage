@@ -112,7 +112,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       loading = true;
     });
     final quoteID = await KeyValueStorage().getValueWithKey(PreferenceKeys.quoteGuestID);
-    if (quoteID != null) {
+    if (quoteID != null && quoteID != '-1') {
       addProductToCartOperation =
           CancelableOperation.fromFuture(QuoteAPI().addSimpleProductToGuestCart(product!, quoteID)).then((status) {
         if (status) {

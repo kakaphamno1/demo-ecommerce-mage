@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:magento2_app/models/order_calculated.dart';
+import 'package:magento2_app/models/order_request.dart';
 
 class QuoteAPI {
   Future<bool> addSimpleProductToGuestCart(Product product, String quoteID) async {
@@ -73,6 +74,89 @@ class QuoteAPI {
     if (response.statusCode == 200) {
       // If the call to the server was successful, parse the JSON.
       return json.decode(response.body) as String;
+    } else {
+      // If that call was not successful, throw an error.
+      throw Exception('Failed to create a guest cart');
+    }
+  }
+
+  Future<bool> requestShippingInformation(quoteId, OrderRequest orderRequest) async {
+    final params = {
+      "addressInformation": {
+        "shipping_address": {
+          "countryId": "VN",
+          "region": "",
+          "street": [
+            "29bt1"
+          ],
+          "company": "",
+          "telephone": orderRequest.billingAddress!.telephone,
+          "postcode": "100000",
+          "city": "HANOI",
+          "firstname": orderRequest.billingAddress!.firstname,
+          "lastname": orderRequest.billingAddress!.lastname
+        },
+        "billing_address": {
+          "countryId": "VN",
+          "region": "",
+          "street": [
+            "29bt1"
+          ],
+          "company": "",
+          "telephone":orderRequest.billingAddress!.telephone,
+          "postcode": "100000",
+          "city": "HANOI",
+          "firstname": orderRequest.billingAddress!.firstname,
+          "lastname": orderRequest.billingAddress!.lastname,
+          "saveInAddressBook": null
+        },
+        "shipping_method_code": "flatrate",
+        "shipping_carrier_code": "flatrate",
+        "extension_attributes": {}
+      }
+    };
+    var uri = Uri.parse(ClientConfigs.loadBasicURL() + APIPath.guestCartsPath + quoteId + '/shipping-information');
+    final response = await http.post(uri,
+        headers: {'Authorization': 'Bearer ' + ClientConfigs.accessToken, "Content-Type": "application/json"},
+        body: json.encode(params));
+    print(response);
+    if (response.statusCode == 200) {
+      // Send API order create
+      await requestCreateOrder(quoteId, orderRequest);
+      return true;
+    } else {
+      // If that call was not successful, throw an error.
+      throw Exception('Failed to create a guest cart');
+    }
+  }
+  Future<bool> requestCreateOrder(quoteId, OrderRequest orderRequest) async {
+    final params = {
+      "cartId": quoteId,
+      "billingAddress": {
+        "countryId": "VN",
+        "region": "",
+        "street": orderRequest.billingAddress!.street,
+        "company": "ACC",
+        "telephone": orderRequest.billingAddress!.telephone,
+        "postcode": "100000",
+        "city": "HANOI",
+        "firstname": orderRequest.billingAddress!.firstname,
+        "lastname": orderRequest.billingAddress!.lastname,
+        "saveInAddressBook": null
+      },
+      "paymentMethod": {"method": "checkmo", "po_number": null, "additional_data": null},
+      "email": orderRequest.email!.trim()
+    };
+    var uri = Uri.parse(ClientConfigs.loadBasicURL() + APIPath.guestCartsPath + quoteId + '/payment-information');
+    final response = await http.post(uri,
+        headers: {'Authorization': 'Bearer ' + ClientConfigs.accessToken, "Content-Type": "application/json"},
+        body: json.encode(params));
+    print(response);
+    if (response.statusCode == 200) {
+
+      KeyValueStorage().set('-1', PreferenceKeys.quoteGuestID);
+
+      return true;
     } else {
       // If that call was not successful, throw an error.
       throw Exception('Failed to create a guest cart');

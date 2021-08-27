@@ -10,6 +10,7 @@ import 'package:magento2_app/configurations/clientConfig.dart';
 import 'package:magento2_app/dataStorage/KeyValueStorage.dart';
 import 'package:magento2_app/models/catalog.dart';
 import 'package:magento2_app/models/order_calculated.dart';
+import 'package:magento2_app/pages/order_confirm_page.dart';
 import 'package:magento2_app/pages/productDetailsPage.dart';
 import 'package:magento2_app/pages/productsPage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -123,7 +124,12 @@ class _CartPageV2State extends State<CartPageV2> {
           color: ThemeColor.appBackground,
           child: Padding(
             padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
-            child: NormalButton(context, text: 'Buy now', isOutLine: false, isLoading: isLoading, onTap: () async {}),
+            child: NormalButton(context, text: 'Buy now', isOutLine: false, isLoading: isLoading, onTap: () async {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => OrderConfirmPage()),
+              );
+            }),
           ),
         )
       ],
@@ -288,12 +294,12 @@ class _CartPageV2State extends State<CartPageV2> {
               children: [
                 LabelValueWidget(
                   'Total order',
-                  TsUtils.formatCurrencyDynamic((orderCalculated!.grandTotal ?? 0).toDouble()),
+                  TsUtils.formatCurrencyDynamic((orderCalculated!.subtotal ?? 0).toDouble()),
                   boldValue: true,
                 ),
-                LabelValueWidget('Discount', TsUtils.formatCurrencyDynamic((orderCalculated!.discountAmount ) * -1)),
-                LabelValueWidget('Ship', TsUtils.formatCurrencyDynamic((orderCalculated!.shippingTaxAmount ) * -1)),
-                LabelValueWidget('Total pay', TsUtils.formatCurrencyDynamic((orderCalculated!.subtotal).toDouble())),
+                LabelValueWidget('Discount', TsUtils.formatCurrencyDynamic((orderCalculated!.discountAmount) * -1)),
+                LabelValueWidget('Ship', TsUtils.formatCurrencyDynamic((orderCalculated!.shippingTaxAmount) * -1)),
+                LabelValueWidget('Total pay', TsUtils.formatCurrencyDynamic((orderCalculated!.grandTotal).toDouble())),
               ],
             ))
         : SizedBox();
