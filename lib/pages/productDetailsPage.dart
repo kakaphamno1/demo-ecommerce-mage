@@ -116,7 +116,22 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       addProductToCartOperation =
           CancelableOperation.fromFuture(QuoteAPI().addSimpleProductToGuestCart(product!, quoteID)).then((status) {
         if (status) {
-          _settingModalBottomSheet(context);
+          showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => AlertDialog(
+                    title: Text("Success"),
+                    content: Text("Add to cart success"),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text("Done"),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      )
+                    ],
+                  ));
+          // _settingModalBottomSheet(context);
         } else {
           showDialog(
               context: context,

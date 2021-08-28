@@ -8,6 +8,7 @@ import 'package:magento2_app/dataStorage/KeyValueStorage.dart';
 import 'package:magento2_app/models/billing_address_request.dart';
 import 'package:magento2_app/models/order_request.dart';
 import 'package:magento2_app/models/payment_method_request.dart';
+import 'package:magento2_app/widget/BadgeWidget.dart';
 
 class OrderConfirmPage extends StatefulWidget {
   @override
@@ -18,14 +19,15 @@ class _OrderConfirmPageState extends State<OrderConfirmPage> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController phoneNameCtl, firstNameCtl, lastNameCtl, emailCtl, streetAddressCtl, countryCtl, cityCtl;
   CancelableOperation? fetchingCreateOrder;
+  bool isLoading = false;
 
   @override
   void initState() {
     phoneNameCtl = TextEditingController(text: '0978100100');
-    firstNameCtl = TextEditingController();
-    lastNameCtl = TextEditingController();
-    emailCtl = TextEditingController();
-    streetAddressCtl = TextEditingController();
+    firstNameCtl = TextEditingController(text: 'Pham');
+    lastNameCtl = TextEditingController(text: 'Bien');
+    emailCtl = TextEditingController(text: 'phambien1701@gmail.com');
+    streetAddressCtl = TextEditingController(text: '29BT1');
     countryCtl = TextEditingController(text: 'VN');
     cityCtl = TextEditingController(text: 'HANOI');
     super.initState();
@@ -41,14 +43,8 @@ class _OrderConfirmPageState extends State<OrderConfirmPage> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery
-        .of(context)
-        .size
-        .width;
-    double height = MediaQuery
-        .of(context)
-        .size
-        .height;
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Container(
         padding: EdgeInsets.fromLTRB(8, 50, 8, 0),
@@ -166,56 +162,51 @@ class _OrderConfirmPageState extends State<OrderConfirmPage> {
                 SizedBox(
                   height: 30.0,
                 ),
-                RaisedButton(
-                  child: Text('Confirm'),
-                  color: Color(0xffEE7B23),
-                  onPressed: () async {
-                    OrderRequest orderRequest = OrderRequest();
-                    // Shipping
-                    orderRequest.email = emailCtl.text;
-                    orderRequest.cartId = '';
-                    orderRequest.billingAddress = BillingAddressRequest();
-                    orderRequest.billingAddress!.firstname = firstNameCtl.text;
-                    orderRequest.billingAddress!.lastname = lastNameCtl.text;
-                    orderRequest.billingAddress!.street = [streetAddressCtl.text];
-                    orderRequest.billingAddress!.countryId = countryCtl.text;
-                    orderRequest.billingAddress!.city = cityCtl.text;
-                    orderRequest.billingAddress!.telephone = phoneNameCtl.text;
-                    orderRequest.billingAddress!.postcode = '100000';
-                    // Payment
-                    orderRequest.paymentMethod = PaymentMethodRequest();
-                    orderRequest.paymentMethod!.method = 'checkmo';
-                    // Request api
-                    String quoteID = await KeyValueStorage().getValueWithKey(PreferenceKeys.quoteGuestID);
-                    fetchingCreateOrder = CancelableOperation.fromFuture(
-                        QuoteAPI().requestShippingInformation(quoteID, orderRequest).then((isSuccess) => {
-                        // setState(() {
-                        //   if (products != null) {
-                        //     lstCart = products;
-                        //   }
-                        //   isLoading = false;
-                        // })
-                        if(isSuccess){
-                            showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (context) =>
-                                AlertDialog(
-                                  title: Text("Success"),
-                                  content: Text("Create order success"),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                      child: Text("Done"),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    )
-                                  ],
-                                ))
+                NormalButton(context, text: 'Confirm', isOutLine: false, isLoading: isLoading, onTap: () async {
+                  setState(() {
+                    isLoading = true;
+                  });
+                  OrderRequest orderRequest = OrderRequest();
+                  // Shipping
+                  orderRequest.email = emailCtl.text;
+                  orderRequest.cartId = '';
+                  orderRequest.billingAddress = BillingAddressRequest();
+                  orderRequest.billingAddress!.firstname = firstNameCtl.text;
+                  orderRequest.billingAddress!.lastname = lastNameCtl.text;
+                  orderRequest.billingAddress!.street = [streetAddressCtl.text];
+                  orderRequest.billingAddress!.countryId = countryCtl.text;
+                  orderRequest.billingAddress!.city = cityCtl.text;
+                  orderRequest.billingAddress!.telephone = phoneNameCtl.text;
+                  orderRequest.billingAddress!.postcode = '100000';
+                  // Payment
+                  orderRequest.paymentMethod = PaymentMethodRequest();
+                  orderRequest.paymentMethod!.method = 'checkmo';
+                  // Request api
+                  String quoteID = await KeyValueStorage().getValueWithKey(PreferenceKeys.quoteGuestID);
+                  fetchingCreateOrder = CancelableOperation.fromFuture(
+                      QuoteAPI().requestShippingInformation(quoteID, orderRequest).then((isSuccess) {
+                    if (isSuccess) {
+                      showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) => AlertDialog(
+                                title: Text("Success"),
+                                content: Text("Create order success"),
+                                actions: <Widget>[
+                                  FlatButton(
+                                    child: Text("Done"),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  )
+                                ],
+                              ));
+                      setState(() {
+                        isLoading = false;
+                      });
                     }
-                    }));
-                  },
-                )
+                  }));
+                }),
               ],
             ),
           ),
