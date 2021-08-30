@@ -172,9 +172,10 @@ class _HomePageState extends State<HomePage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            // BaseWidgetImage.loadImageRadius(category.imageURL ?? "",
-                            //     height: 70, width: 70, fit: BoxFit.cover, radius: 35),
-                            Image.asset('assets/ic_hat.png',height: 70, width: 70, fit: BoxFit.cover),
+                            category.imageURL!=null && category.imageURL!.isNotEmpty
+                                ? BaseWidgetImage.loadImageRadius(category.imageURL ?? "",
+                                    height: 70, width: 70, fit: BoxFit.cover, radius: 35)
+                                : Image.asset('assets/ic_hat.png', height: 70, width: 70, fit: BoxFit.cover),
                             SizedBox(height: 8),
                             Text(
                               category.name ?? "",

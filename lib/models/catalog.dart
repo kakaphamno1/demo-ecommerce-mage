@@ -118,7 +118,7 @@ class Category {
       }
     }
 
-    final imageURL = (imageURLPath != "") ? (globalStoreConfig.baseMediaURL??'') + MediaPath.categoryImagePath + imageURLPath : "";
+    final imageURL = (imageURLPath != "") ? (globalStoreConfig.baseURL??'').substring(0,globalStoreConfig.baseURL!.length-1) + imageURLPath : "";
     // final imageURL =
     //     'http://magento2demo.firebearstudio.com/pub/media/catalog/product/cache/f788d01ac2c5fd4793fdef46ac3ad66c/' + imageURLPath;
     final childrenData = json["children_data"] as List;
