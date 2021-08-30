@@ -7,6 +7,7 @@ import 'package:magento2_app/apis/catalogAPI.dart';
 import 'package:magento2_app/models/catalog.dart';
 import 'package:magento2_app/pages/productDetailsPage.dart';
 import 'package:magento2_app/res/app_themes.dart';
+import 'package:magento2_app/widget/ts_utils.dart';
 
 enum ProductsLoadMoreStatus { STABLE, LOADING }
 
@@ -165,8 +166,8 @@ class ProductView extends StatelessWidget {
                     border: Border.all(color: Colors.white, width: 1),
                     image: DecorationImage(
                         image: imageProvider,
-                        fit: BoxFit.fitHeight,
-                        colorFilter: ColorFilter.mode(Colors.white, BlendMode.color)),
+                        fit: BoxFit.cover,
+                     ),
                   ),
                 ),
                 placeholder: (context, url) => Image.asset('assets/ic_hat.png'),
@@ -177,7 +178,7 @@ class ProductView extends StatelessWidget {
             ),
             Text(
               product.name ?? "",
-              maxLines: 2,
+              maxLines: 1,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
@@ -199,7 +200,7 @@ class ProductView extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.w400, fontSize: 14, color: ThemeColor.AppDark[700]),
                 children: <TextSpan>[
                   TextSpan(
-                      text: product.price.toString(),
+                      text: TsUtils.formatCurrencyDynamic(product.price) ,
                       style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: ThemeColor.AppDark[900])),
                 ],
               ),

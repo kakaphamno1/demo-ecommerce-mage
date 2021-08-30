@@ -20,10 +20,10 @@ class TsUtils {
   static final oCcy = new NumberFormat("#,##0", "en_US");
 
   static String formatCurrency(double? value, {String? currency}) {
-    return oCcy.format(value ?? 0) + " " + (currency ?? "MMK");
+    return oCcy.format(value ?? 0) + " " + (currency ?? "VND");
   }
   static String formatCurrencyDynamic(dynamic value, {String? currency}) {
-    return oCcy.format(value ?? 0) + " " + (currency ?? "MMK");
+    return oCcy.format(value ?? 0) + " " + (currency ?? "VND");
   }
 
   static String formatNumber(double? value) {

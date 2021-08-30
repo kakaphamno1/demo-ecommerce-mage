@@ -30,21 +30,29 @@ class _CategoryPageState extends State<CategoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: widget.category == null ? Text("Category") : Text(widget.category?.name??""),
+    return RefreshIndicator(
+      backgroundColor: Colors.teal,
+      color: Colors.white,
+      displacement: 200,
+      strokeWidth: 5,
+      onRefresh:_loadCategory,
+      child: Scaffold(
+        appBar: AppBar(
+          title: widget.category == null ? Text("Category") : Text(widget.category?.name??""),
+        ),
+        body: (widget.category == null)
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : _loadListView(),
       ),
-      body: (widget.category == null)
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : _loadListView(),
     );
   }
 
-  void _loadCategory() {
-    CatalogAPI().getRootCategory().then((category) => {
-          setState(() => {widget.category = category})
+  Future _loadCategory() async {
+    CatalogAPI().getRootCategory().then((category)  {
+          setState(() => {widget.category = category});
+          return null;
         });
   }
 

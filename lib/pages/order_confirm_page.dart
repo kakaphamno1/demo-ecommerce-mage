@@ -45,6 +45,18 @@ class _OrderConfirmPageState extends State<OrderConfirmPage> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+    var isChecked =true;
+    Color getColor(Set<MaterialState> states) {
+      const Set<MaterialState> interactiveStates = <MaterialState>{
+        MaterialState.pressed,
+        MaterialState.hovered,
+        MaterialState.focused,
+      };
+      if (states.any(interactiveStates.contains)) {
+        return Colors.blue;
+      }
+      return Colors.red;
+    }
     return Scaffold(
       body: Container(
         padding: EdgeInsets.fromLTRB(8, 50, 8, 0),
@@ -162,6 +174,66 @@ class _OrderConfirmPageState extends State<OrderConfirmPage> {
                 SizedBox(
                   height: 30.0,
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Shipping Methods',
+                      style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Checkbox(
+                      checkColor: Colors.white,
+                      fillColor: MaterialStateProperty.resolveWith(getColor),
+                      value: isChecked =true,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          isChecked = value!;
+                        });
+                      },
+                    ),
+                    SizedBox(width: 8,),
+                    Text(
+                      '5 VND - Fixed - Flat Rate',
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 30.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Payment Methods',
+                      style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Checkbox(
+                      checkColor: Colors.white,
+                      fillColor: MaterialStateProperty.resolveWith(getColor),
+                      value: isChecked =true,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          isChecked = value!;
+                        });
+                      },
+                    ),
+                    SizedBox(width: 8,),
+                    Text(
+                      'Check / Money order',
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
+                    ),
+                  ],
+                ),
+                SizedBox(width: 30,),
                 NormalButton(context, text: 'Confirm', isOutLine: false, isLoading: isLoading, onTap: () async {
                   setState(() {
                     isLoading = true;
@@ -207,6 +279,7 @@ class _OrderConfirmPageState extends State<OrderConfirmPage> {
                     }
                   }));
                 }),
+                SizedBox(width: 30,),
               ],
             ),
           ),

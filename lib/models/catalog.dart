@@ -8,7 +8,7 @@ class Product {
   int? id;
   String? name;
   String? sku;
-  int? price;
+  dynamic price;
   String? imageURL;
   List<CustomAttribute>? customAttributes;
   List<String>? imageURLs;
@@ -42,16 +42,16 @@ class Product {
     if (array.length > 0) {
       imageURLPath = array.first.value;
     }
-    // final imageURL = (imageURLPath != "") ? (globalStoreConfig.baseMediaURL??'') + MediaPath.productImagePath + imageURLPath : "";
-    final imageURL =
-        'http://magento2demo.firebearstudio.com/pub/media/catalog/product/cache/f788d01ac2c5fd4793fdef46ac3ad66c/' + imageURLPath;
+    final imageURL = (imageURLPath != "") ? (globalStoreConfig.baseMediaURL??'') + MediaPath.productImagePath + imageURLPath : "";
+    // final imageURL =
+    //     'http://magento2demo.firebearstudio.com/pub/media/catalog/product/cache/f788d01ac2c5fd4793fdef46ac3ad66c/' + imageURLPath;
     final imageURLs = <String>[];
     final mediaGalleryEntriesData = json["media_gallery_entries"] as List;
     if (mediaGalleryEntriesData != null) {
       imageURLs.addAll(mediaGalleryEntriesData.map((json) {
         final file = json["file"] as String;
-        // return (globalStoreConfig.baseMediaURL??'') + MediaPath.productImagePath + file;
-        return 'http://magento2demo.firebearstudio.com/pub/media/catalog/product/cache/f788d01ac2c5fd4793fdef46ac3ad66c/' + file;
+        return (globalStoreConfig.baseMediaURL??'') + MediaPath.productImagePath + file;
+        // return 'http://magento2demo.firebearstudio.com/pub/media/catalog/product/cache/f788d01ac2c5fd4793fdef46ac3ad66c/' + file;
       }));
     }
     final shortDesArray = customAttributes.where((attr) => attr.code == 'short_description').toList();
@@ -72,9 +72,9 @@ class Product {
 
   factory Product.fromJsonCart(Map<String, dynamic> json) {
     String imageURLPath = "";
-    // final imageURL = (imageURLPath != "") ? (globalStoreConfig.baseMediaURL??'') + MediaPath.productImagePath + imageURLPath : "";
-    final imageURL =
-        'http://magento2demo.firebearstudio.com/pub/media/catalog/product/cache/f788d01ac2c5fd4793fdef46ac3ad66c/' + imageURLPath;
+    final imageURL = (imageURLPath != "") ? (globalStoreConfig.baseMediaURL??'') + MediaPath.productImagePath + imageURLPath : "";
+    // final imageURL =
+    //     'http://magento2demo.firebearstudio.com/pub/media/catalog/product/cache/f788d01ac2c5fd4793fdef46ac3ad66c/' + imageURLPath;
     final imageURLs = <String>[];
     final mediaGalleryEntriesData = json["media_gallery_entries"] as List;
     if (mediaGalleryEntriesData != null) {
@@ -118,9 +118,9 @@ class Category {
       }
     }
 
-    // final imageURL = (imageURLPath != "") ? (globalStoreConfig.baseMediaURL??'') + MediaPath.categoryImagePath + imageURLPath : "";
-    final imageURL =
-        'http://magento2demo.firebearstudio.com/pub/media/catalog/product/cache/f788d01ac2c5fd4793fdef46ac3ad66c/' + imageURLPath;
+    final imageURL = (imageURLPath != "") ? (globalStoreConfig.baseMediaURL??'') + MediaPath.categoryImagePath + imageURLPath : "";
+    // final imageURL =
+    //     'http://magento2demo.firebearstudio.com/pub/media/catalog/product/cache/f788d01ac2c5fd4793fdef46ac3ad66c/' + imageURLPath;
     final childrenData = json["children_data"] as List;
     List<Category>? children;
     if (childrenData != null) {

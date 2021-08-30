@@ -187,7 +187,8 @@ class _CartPageV2State extends State<CartPageV2> {
         width: 8,
       ),
       InkWell(
-        child: BaseWidgetImage.loadImageRadius8(product.imageURL ?? '', height: 86, width: 86, value: BoxFit.fill),
+        // child: BaseWidgetImage.loadImageRadius8(product.imageURL ?? '', height: 86, width: 86, value: BoxFit.fill),
+        child:    Image.asset('assets/ic_hat.png',height: 70, width: 70, fit: BoxFit.cover),
         onTap: () {
           Navigator.push(
               context,

@@ -77,10 +77,9 @@ class _MainPageState extends State<MainPage> {
   List<Widget> contentPageView() {
     return <Widget>[
       KeepAliveWrapper(child: HomePage()),
-      KeepAliveWrapper(
-          child: CategoryPage(
-            category: null,
-          )),
+      CategoryPage(
+        category: null,
+      ),
       CartPageV2(),
       KeepAliveWrapper(child: ProfilePage()),
       KeepAliveWrapper(child: MorePage())

@@ -21,7 +21,7 @@ class ProductPriceRowWidget extends StatelessWidget {
         price != null && price! >= 0
             ? RichText(
                 text: TextSpan(
-                  text: TsUtils.formatNumber(price),
+                  text: TsUtils.formatCurrencyDynamic(price),
                   style: TextStyle(
                       fontWeight: priceWeight ?? FontWeight.w600,
                       fontSize: priceSize ?? 14,
@@ -40,7 +40,7 @@ class ProductPriceRowWidget extends StatelessWidget {
         SizedBox(width: 8),
         orgPrice != null && orgPrice! > 0 && orgPrice! > price!
             ? Text(
-                '${TsUtils.formatCurrency(orgPrice, currency: currency)}',
+                '${TsUtils.formatCurrencyDynamic(orgPrice, currency: currency)}',
                 style: TextStyle(
                     color: Colors.grey,
                     fontSize: orgPriceSize ?? 10,
